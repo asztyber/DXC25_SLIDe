@@ -1,40 +1,56 @@
 import pandas as pd
-
 import time
+from ExampleDiagnosisSystem import ExampleDiagnosisSystem # Change this line to use your own diagnosis system
+import sys
+import os
 
-from ExampleDiagnosisSystem import ExampleDiagnosisSystem
+TIMEOUT = 10
 
-## Create diagnosis system class
-
-# Create diagnosis system. 
-EDS = ExampleDiagnosisSystem() # change to your class here
-
-## Initialize diagnosis system
-# The diagnosis system parameter file is created by calling EDS.Train()
-# You can initialize the diagnosis system by loading a parameter file
-EDS.Initialize()
+# Create diagnosis system
+ds = ExampleDiagnosisSystem() # Change this line to use your own diagnosis system
 
 # Load test data
-test_data = pd.read_csv('../data/trainingdata/wltp_f_waf_110.csv')
+if len(sys.argv) != 2:
+    print("Usage: python run_diagnoser.py <input_file>")
+    sys.exit(1)
+
+input_file = sys.argv[1]
+test_data = pd.read_csv(input_file, sep=';')
 
 # Log diagnosis output
-filehandler = open('output.csv', 'w')
-filehandler.write('sample_time,computation_time,detection,fpic_rank,fpim_rank,fwaf_rank,fiml_rank,fx_rank\n');
+output_file = os.path.join('results', 'output_' + os.path.basename(input_file))
+filehandler = open(output_file, 'w')
+
+# Write header
+header = 'sample_time;computation_time;fault_detection;' + ';'.join([f'fault_isolation_{i}' for i in range(ds.n_faults)]) + ';cyber_detection;' + ';'.join([f'cyber_isolation_{i}' for i in range(ds.n_loops)]) + '\n'
+filehandler.write(header)
 
 for time_idx in range(len(test_data)):
     t = time.time()
 
     # Feed sample to diagnosis system and return diagnosis output
-    detection, isolation = EDS.Input(test_data.iloc[time_idx,:].to_frame().transpose())
+    sample = test_data.iloc[time_idx, :].to_frame().transpose()
+    fault_detection, fault_isolation, cyber_detection, cyber_isolation = ds.diagnose_sample(sample)
     
     elapsed = time.time() - t
     
     # Log diagnosis output
-    filehandler.write('%f,%f,%d,%f,%f,%f,%f,%f \n' % (test_data['time'][time_idx], elapsed, detection[0], isolation[0,0], isolation[0,1], isolation[0,2], isolation[0,3], isolation[0,4]))
+    filehandler.write('%f;%f;%d;%s;%d;%s\n' % (
+        test_data['t'][time_idx], 
+        elapsed, 
+        fault_detection, 
+        ';'.join(map(str, fault_isolation)), 
+        cyber_detection, 
+        ';'.join(map(str, cyber_isolation))
+    ))
+
+    if elapsed > TIMEOUT:
+        print(f"Timeout at time index {time_idx} ({test_data['time'][time_idx]})")
+        break
 
     # Print progress
     if time_idx % 1000 == 0:
-        print('.', end="")
+        print('.', end="", flush=True)
     
 # Close logger
 filehandler.close()
