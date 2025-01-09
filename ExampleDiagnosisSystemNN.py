@@ -30,8 +30,8 @@ class ExampleDiagnosisSystemNN(DiagnosisSystemClass):
     def _build_and_train_model(self):
         # Load and prepare data
         df = pd.read_csv('data/training_data/example_data.csv', sep=';')
-        X = df[['TS42P', 'B', 'FP4P']].values
-        y = df['TP42P'].values.reshape(-1, 1)
+        X = df[['TS41', 'B', 'FS4']].values
+        y = df['TS42'].values.reshape(-1, 1)
         
         # Scale the data
         X_scaled = self.scaler_X.fit_transform(X)
@@ -68,11 +68,11 @@ class ExampleDiagnosisSystemNN(DiagnosisSystemClass):
 
     def diagnose_sample(self, sample):
         # Get prediction for the sample
-        input_data = sample[['TS42P', 'B', 'FP4P']].values.reshape(1, -1)
+        input_data = sample[['TS41', 'B', 'FS4']].values.reshape(1, -1)
         scaled_input = self.scaler_X.transform(input_data)
         prediction = self.model(scaled_input)
         prediction = self.scaler_y.inverse_transform(prediction)
-        residual = sample['TP42P'].values[0] - prediction[0, 0]
+        residual = sample['TS42'].values[0] - prediction[0, 0]
         # process faults
         fault_detection = residual > 0.2
         

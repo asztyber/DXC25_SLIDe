@@ -5,9 +5,8 @@ class DiagnosisSystemClass:
 
     def __init__(self):
         self.signal_names = [
-            "B", "FP4P", "TS31P", "GV3", "TS32P", "TP32P", "GV4", "TS42P", 
-            "TP42P", "SP31", "CV31", "SP32", "CV32", "SP41", "CV41", "SP42", 
-            "CV42", "FP3P", "FP2P"
+            'B', 'FS2', 'TS21', 'GV3', 'FS3', 'TS31', 'SP31', 'CV31',  'TS32', 'SP32', 'CV32', 'GV4', 'FS4',
+            'TS41', 'SP41', 'CV41',  'TS42', 'SP42', 'CV42'
         ]
         self.n_faults = 16
         self.n_loops = 4
