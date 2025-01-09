@@ -49,6 +49,10 @@ class MyDiagnosisSystem(DiagnosisSystemClass):
         return fault_detection, fault_isolation, cyber_detection, cyber_isolation
 ```
 
+#### Example Participant Implementation with Neural Network
+Example using neural network for residual generator was provided in ExampleDiagnosisSystemNN.py.
+To run the neural network example, add tensorflow, scikit-learn, and joblib to the requirements.txt file.
+
 ### Input and Output
 - **Input File**: specify file name in the command line
 ```
@@ -69,19 +73,25 @@ ds = ExampleDiagnosisSystem() # Change this line to use your own diagnosis syste
 Do not change anything else in run_diagnoser.py!
 
 ### Timeout
-The script has a timeout of 10 seconds for each sample. If the diagnosis takes longer than this, the script will print a timeout message and stop processing further samples.
+The script has a timeout of 0.1 seconds for each sample. If the diagnosis takes longer than this, the script will print a timeout message and stop processing further samples.
+
+The solutions will be evaluated on WSL2 Ubuntu 22.04, Docker version 24.0.7, Intel(R) Core(TM) i7-10750H CPU @ 2.60GHz.
+
+It means that your solution can be up to approximately 20 times slower than the example implementation in ExampleDiagnosisSystemNN.py.
 
 ### Expected Output from `diagnose_sample`
 The `diagnose_sample` method should return a tuple with the following elements:
 - `fault_detection`: 0 or 1
 - `fault_isolation`: a numpy array with the probabilities of each fault of length `n_faults`. Array entries should sum to one.
 - `cyber_detection`: 0 or 1
-- `cyber_isolation`: a numpy array with the probabilities of each loop of length `n_loops`. Array entries should sum to one.
+- `cyber_isolation`: a numpy array with the probabilities of each loop of length `n_loops`. Array entries should be between 0 and 1.
 
 ### Initialization in `__init__`
 Participants can use the `__init__` method to initialize their diagnosis system. This can include loading models, precomputed parameters, or any other setup required for their diagnosis system.
 
 Please note that all solutions will be evaluated inside a docker image created with the provided docker file. Please ensure that all precomputed files are compatible with this environment. It is strongly recommended that you run your final model training on the docker image created using the provided dockerfile.
+
+Example how to save and load models and scalers is provided in ExampleDiagnosisSystemNN.py. Please make sure that your solution includes trained models (where applicable) in the data/resources directory and the source code required to train the models.
 
 
 ## Prerequisites
@@ -135,6 +145,8 @@ Please note that all solutions will be evaluated inside a docker image created w
 2. **Files Overview**:
    - `Dockerfile`: Defines the Docker image for the competition.
    - `DiagnosisSystemClass.py`: The base class interface for participants.
+   - `ExampleDiagnosisSystem.py`: Example implementation of the DiagnosisSystemClass.py.
+   - `ExampleDiagnosisSystemNN.py`: Example implementation of the DiagnosisSystemClass.py using neural network for residual generator.
    - `run_diagnoser.py`: The script used to run participant submissions.
    - `requirements.txt`: Contains required Python packages.
 
@@ -166,4 +178,7 @@ docker run -v "${PWD}:/app" --network none competition_env run_diagnoser.py data
 
 By using --network none, the container will be completely isolated from the network, ensuring it cannot connect to the internet or any external network.
 
+### Additional Information
+
+Please note that the example_data.csv is only for testing and explanatory purposes. The actual data is **not provided** in this repository because of GitHub file size limits. Please use the training data provided on the competition website to train your models.
 

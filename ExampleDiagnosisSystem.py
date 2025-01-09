@@ -8,9 +8,10 @@ class ExampleDiagnosisSystem(DiagnosisSystemClass):
         
         super().__init__()
         # your initialization code here
-        # if the models or parameters does not exist in the specified directory run trining on the 
-        # training data and save the models and parameters in the resources directory
+        # if the models or parameters does not exist in the data/resources directory run training on the 
+        # training data and save the models and parameters in the data/resources directory
         # you can load models and precomputed parameters here
+        # training and loading does not count towards the computation time
 
     def diagnose_sample(self, sample):
 
@@ -30,7 +31,6 @@ class ExampleDiagnosisSystem(DiagnosisSystemClass):
         
         if cyber_detection == 1:
             cyber_isolation = np.random.uniform(0, 1, self.n_loops)
-            cyber_isolation = cyber_isolation / np.sum(cyber_isolation)
         else:
             cyber_isolation = np.zeros(self.n_loops)
 

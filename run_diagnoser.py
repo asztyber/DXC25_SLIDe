@@ -4,7 +4,7 @@ from ExampleDiagnosisSystem import ExampleDiagnosisSystem # Change this line to 
 import sys
 import os
 
-TIMEOUT = 10
+TIMEOUT = 0.1
 
 # Create diagnosis system
 ds = ExampleDiagnosisSystem() # Change this line to use your own diagnosis system
@@ -44,7 +44,7 @@ for time_idx in range(len(test_data)):
         ';'.join(map(str, cyber_isolation))
     ))
 
-    if elapsed > TIMEOUT:
+    if elapsed > TIMEOUT and time_idx > 5:
         print(f"Timeout at time index {time_idx} ({test_data['time'][time_idx]})")
         break
 
