@@ -13,12 +13,12 @@ This guide will walk you through setting up and running the competition environm
 Here is an example implementation of the class:
 
 ```python
-# MyDiagnosisSystem.py
+# ExampleDiagnosisSystem.py
 import numpy as np
 import random
 from DiagnosisSystemClass import DiagnosisSystemClass
 
-class MyDiagnosisSystem(DiagnosisSystemClass):
+class ExampleDiagnosisSystem(DiagnosisSystemClass):
 
     def __init__(self):
         super().__init__()
